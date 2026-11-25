@@ -27,6 +27,10 @@ public class SecretPass {
     // Count characters excluding whitespace
     public int getStringLen(String inString) {
 
+        if (inString == null) {
+            return 0;
+        }
+
         int count = 0;
 
         for (int i = 0; i < inString.length(); i++) {
@@ -40,7 +44,7 @@ public class SecretPass {
     }
 
     // Check input validity
-    // Only uppercase letters, numbers and spaces are allowed
+    // Only lowercase letters, numbers and spaces are allowed
     public Boolean checkStringValidity(String inString) {
 
         if (inString == null || inString.isEmpty()) {
@@ -51,11 +55,11 @@ public class SecretPass {
 
             char ch = inString.charAt(i);
 
-            boolean isUppercase = (ch >= 'A' && ch <= 'Z');
+            boolean isLowercase = (ch >= 'a' && ch <= 'z');
             boolean isDigit = (ch >= '0' && ch <= '9');
             boolean isSpace = (ch == ' ');
 
-            if (!isUppercase && !isDigit && !isSpace) {
+            if (!isLowercase && !isDigit && !isSpace) {
                 return false;
             }
         }
@@ -66,31 +70,40 @@ public class SecretPass {
     // Shift each character forward according to stringLen
     public String shiftChar(String inString, int stringLen) {
 
+        if (!checkStringValidity(inString)) {
+            return "";
+        }
+
         StringBuilder encoded = new StringBuilder();
 
         for (int i = 0; i < inString.length(); i++) {
 
-            char ch = Character.toLowerCase(inString.charAt(i));
+            char ch = inString.charAt(i);
 
+            // Find original character position
             int index = CHAR_TABLE.indexOf(ch);
 
-            if (index == -1) {
-                return "";
-            }
-
+            // Shift character forward
             int newIndex = (index + stringLen) % CHAR_TABLE.length();
 
+            // Get shifted character
             char shiftedChar = CHAR_TABLE.charAt(newIndex);
 
             encoded.append(shiftedChar);
         }
 
         // Reverse the encoded String
-        return reversedString(encoded.toString());
+        outString = reversedString(encoded.toString());
+
+        return outString;
     }
 
     // Reverse the String
     public String reversedString(String inString) {
+
+        if (inString == null) {
+            return "";
+        }
 
         return new StringBuilder(inString).reverse().toString();
     }
